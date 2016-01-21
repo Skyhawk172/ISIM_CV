@@ -5,13 +5,8 @@ import glob, os, sys
 
 
 def update_one_file(filename):
-    """ Open a FITS file and rewrite each header in it.
-    This does not actually apply any semantic changes to the file, 
-    but does reformat the header to be properly left-aligned for
-    cases where the Mathematica FITS writer has made them right-aligned. 
+    # UPDATE SOME HEADER INFORMATION FOR ONE FILE AT A TIME:
 
-    -MP 2011-08-23
-    """
     print "Updating file "+filename+"...",
     fits = pyfits.open(filename, mode='update')
 
@@ -34,8 +29,6 @@ def update_one_file(filename):
             print "  ---> fixed subarray keyword"
 
     
-
-
 
     # SECOND: ADD A FEW REQUIRED KEYWORDS FOR THE WAS:
     if ("PUPIL" in fits[0].header) and (fits[0].header["PUPIL"]=="Weak Lens 1"): fits[0].header.update("PUPIL","WLP8") 
@@ -70,20 +63,21 @@ def update_one_file(filename):
 
 
 def update_all(dir, string):
-    """ Update all files in a directory"""
+    # Grab the FITS files in directory and loop through each of them:
+
     os.chdir(dir)
     print os.getcwd()+"/"+dir
     for filename in glob.glob('*'+string+'*.fits'):
         update_one_file(filename)
 
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Fix FITS file headers for the WAS")
-
     parser.add_argument("dir", metavar="dir", nargs=1, help="directory to process FITS files")
-    parser.add_argument("-s",  default='', metavar="string"  , help="string to match anywhere in filenames")
-
+    parser.add_argument("-s",  default='', metavar="string"  , help="string to match anywhere in the filenames")
     args = parser.parse_args()
+
     dir=args.dir[0]
     string=args.s
 
