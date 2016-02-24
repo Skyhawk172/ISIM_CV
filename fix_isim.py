@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-import pyfits
+#import pyfits
+import astropy.io.fits as pyfits
 import argparse
 import glob, os, sys
 
@@ -10,9 +11,10 @@ def update_one_file(filename):
     print "Updating file "+filename+"...",
     fits = pyfits.open(filename, mode='update')
 
-
+    print fits.info()
+    
     # FIRST: UPDATE A FEW KEYWORDS FOR THE WAS:
-    fits[0].header.update("APERNAME", "APERNAME") 
+    #fits[0].header.update("APERNAME", "APERNAME") 
     if fits[1].header["EXTNAME"]!="SCI": fits[1].header.update("EXTNAME", "SCI")
 
     # FIX SUBARRAY keyword if not correct (CV-3 data looks alright; CV-2 was hardcoded to False):
@@ -60,6 +62,8 @@ def update_one_file(filename):
     fits.flush() 
     fits.close()
     print "OK"
+
+
 
 
 def update_all(dir, string):
