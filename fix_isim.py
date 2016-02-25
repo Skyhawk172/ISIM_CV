@@ -15,15 +15,16 @@ def update_one_file(filename):
     
     # FIRST: UPDATE A FEW KEYWORDS FOR THE WAS:
     #fits[0].header.update("APERNAME", "APERNAME") 
-    if fits[1].header["EXTNAME"]!="SCI": fits[1].header.update("EXTNAME", "SCI")
+
+    #if fits[1].header["EXTNAME"]!="SCI": fits[1].header.update("EXTNAME", "SCI")
 
     # FIX SUBARRAY keyword if not correct (CV-3 data looks alright; CV-2 was hardcoded to False):
     if fits[0].header["INSTRUME"]=="MIRI": full_dim=1032
     else: full_dim=2048
 
-    if fits[1].data.shape[0]==full_dim and fits[1].data.shape[1]==full_dim: 
+    if fits['SCI'].data.shape[0]==full_dim and fits['SCI'].data.shape[1]==full_dim: 
         if fits[0].header["SUBARRAY"] != False: 
-            fits[0].header.update("SUBARRAY", False)
+            fits['SCI'].header.update("SUBARRAY", False)
             print "  ---> fixed subarray keyword"
     else: 
          if fits[0].header["SUBARRAY"] != True: 
@@ -36,8 +37,8 @@ def update_one_file(filename):
     if ("PUPIL" in fits[0].header) and (fits[0].header["PUPIL"]=="Weak Lens 1"): fits[0].header.update("PUPIL","WLP8") 
     fits[0].header.set("SUBSTRT1",int(fits[0].header["COLCORNR"]))
     fits[0].header.set("SUBSTRT2",int(fits[0].header["ROWCORNR"]))
-    fits[0].header.set("SUBSIZE1",fits[1].data.shape[0]) 
-    fits[0].header.set("SUBSIZE2",fits[1].data.shape[1])
+    fits[0].header.set("SUBSIZE1",fits['SCI'].data.shape[0]) 
+    fits[0].header.set("SUBSIZE2",fits['SCI'].data.shape[1])
 
 
     # Add FGS-specific keywords:
